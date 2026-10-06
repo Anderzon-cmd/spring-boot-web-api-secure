@@ -44,11 +44,11 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Dependencia desactualizada agregada solo para el laboratorio SCA. -->
+        <!-- Dependencia actualizada para evitar CVE-2022-42889 en Commons Text. -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
-            <version>1.9</version>
+            <version>1.10.0</version>
         </dependency>
 
         <dependency>
@@ -94,7 +94,7 @@
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
-                <version>11.1.1</version>
+                <version>13.0.0</version>
                 <configuration>
                     <failBuildOnCVSS>7</failBuildOnCVSS>
                 </configuration>

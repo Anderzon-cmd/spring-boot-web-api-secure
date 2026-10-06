@@ -32,6 +32,12 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: 'temurin'
           cache: maven
+        - name: Cache OWASP vulnerability database
+          uses: actions/cache@v4
+          with:
+            path: ~/.m2/repository/org/owasp/dependency-check-data
+            key: dependency-check-data-${{ runner.os }}
+            restore-keys: dependency-check-data-
 
       - name: Cache Maven dependencies
         uses: actions/cache@v4
@@ -102,6 +108,8 @@ jobs:
   sca-dependency-check:
     name: SCA - OWASP Dependency-Check
     runs-on: ubuntu-latest
+    env:
+      NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -116,7 +124,8 @@ jobs:
       - name: Run OWASP Dependency-Check
         run: |
           mvn -B org.owasp:dependency-check-maven:check \
-              -DfailBuildOnCVSS=7
+              -DfailBuildOnCVSS=7 \
+              -DnvdApiKey="$NVD_API_KEY"
 
       - name: Upload Dependency-Check report
         uses: actions/upload-artifact@v4
