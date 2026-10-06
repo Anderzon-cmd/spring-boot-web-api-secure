@@ -105,7 +105,8 @@ jobs:
   sca-dependency-check:
     name: SCA - OWASP Dependency-Check
     runs-on: ubuntu-latest
-    if: false  # Skip this job if SKIP_SCA is set to 'true'
+    needs: [sast-codeql]
+    if: ${{ env.SKIP_SCA != 'true' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -118,8 +119,15 @@ jobs:
           cache: maven
 
       - name: Run OWASP Dependency-Check
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: |
+          if [ -z "$NVD_API_KEY" ]; then
+            echo "::error::Missing required secret: NVD_API_KEY"
+            exit 1
+          fi
           mvn -B org.owasp:dependency-check-maven:check \
+              -DnvdApiKey="$NVD_API_KEY" \
               -DfailBuildOnCVSS=7 \
               -DsuppressionFile=dependency-check-suppressions.xml || true
         # Remove "|| true" once you have suppressions in place and want hard fails
