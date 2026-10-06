@@ -77,3 +77,5 @@ docker compose -f docker-compose.security.yml run --rm spotbugs
 El docente dispone de `docs/GUIA-DOCENTE.md`, que contiene el catálogo de
 hallazgos y las pruebas sugeridas. Se recomienda entregar inicialmente a los
 estudiantes el resto del repositorio sin dicho documento.
+
+## Nota personales
