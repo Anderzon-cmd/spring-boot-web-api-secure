@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -17,13 +18,15 @@ class DevSecOpsLabApplicationTests {
     private MockMvc mockMvc;
 
     @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
     void productSearchIsAvailable() throws Exception {
         mockMvc.perform(get("/api/products/search").param("name", "Laptop"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void adminEndpointIsCurrentlyExposedForTheLab() throws Exception {
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    void adminEndpointRequiresAuthentication() throws Exception {
         mockMvc.perform(get("/api/admin/users/1"))
                 .andExpect(status().isOk());
     }

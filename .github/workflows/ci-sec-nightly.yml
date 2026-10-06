@@ -88,6 +88,13 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Cache OWASP vulnerability database
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository/org/owasp/dependency-check-data
+          key: dependency-check-data-${{ runner.os }}
+          restore-keys: dependency-check-data-
+
       - name: Autobuild
         uses: github/codeql-action/autobuild@v3
 
@@ -114,11 +121,16 @@ jobs:
           cache: maven
 
       - name: Run OWASP Dependency-Check
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: |
+          if [ -z "$NVD_API_KEY" ]; then
+            echo "::error::Missing required secret: NVD_API_KEY"
+            exit 1
+          fi
           mvn -B org.owasp:dependency-check-maven:check \
-              -DfailBuildOnCVSS=7 \
-              -DsuppressionFile=dependency-check-suppressions.xml || true
-        # Remove "|| true" once you have suppressions in place and want hard fails
+              -DnvdApiKey="$NVD_API_KEY" \
+              -DfailBuildOnCVSS=7
 
       - name: Upload Dependency-Check report
         uses: actions/upload-artifact@v4
