@@ -61,7 +61,7 @@ En Windows PowerShell:
 El script ejecuta los tres análisis en Docker y termina con error si alguno
 detecta hallazgos por encima del umbral configurado:
 
-- Semgrep usa `auto` y el ruleset local `.semgrep.yml`, y genera JSON y SARIF.
+- Semgrep usa el ruleset local `.semgrep.yml` con métricas desactivadas, y genera JSON y SARIF.
 - OWASP Dependency-Check genera HTML y JSON con fallo desde CVSS 7.
 - SpotBugs compila el proyecto y deja `spotbugs.xml`.
 

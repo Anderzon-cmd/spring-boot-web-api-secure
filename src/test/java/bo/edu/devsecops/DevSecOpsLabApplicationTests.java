@@ -23,8 +23,8 @@ class DevSecOpsLabApplicationTests {
     }
 
     @Test
-    void adminEndpointIsCurrentlyExposedForTheLab() throws Exception {
+    void adminEndpointIsProtected() throws Exception {
         mockMvc.perform(get("/api/admin/users/1"))
-                .andExpect(status().isOk());
+                .andExpect(status().isForbidden());
     }
 }

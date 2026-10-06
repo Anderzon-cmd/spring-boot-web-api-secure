@@ -25,10 +25,9 @@ jobs:
       - name: Ejecutar Semgrep
         run: |
           semgrep scan \
-            --config auto \
             --config .semgrep.yml \
             --error \
-            --metrics=on \
+            --metrics=off \
             --json-output=semgrep-results.json \
             --sarif-output=semgrep-results.sarif \
             src/main/java

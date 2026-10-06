@@ -10,10 +10,10 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // LAB: configuracion deliberadamente permisiva para analizar control de acceso y CSRF.
         return http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/products/search", "/api/auth/login").permitAll()
+                        .anyRequest().authenticated())
                 .build();
     }
 }

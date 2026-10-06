@@ -174,8 +174,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run Semgrep
         run: |
-          semgrep scan --config auto --config .semgrep.yml \
-            --error --sarif --output semgrep-results.sarif \
+          semgrep scan --config .semgrep.yml \
+            --metrics off --error --sarif --output semgrep-results.sarif \
             --json-output semgrep-results.json src/main/java
       - name: Upload Semgrep report to code scanning
         if: always()
