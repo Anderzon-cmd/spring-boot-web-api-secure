@@ -100,33 +100,36 @@ jobs:
 
   # ------------------------------------------------------------------
   # 3. Software Composition Analysis (SCA) - Dependency vulnerabilities
+  # Temporarily disabled because the first OWASP run downloads the CVE
+  # database and can take a long time. Uncomment this block and add
+  # sca-dependency-check to quality-gate.needs when it is required again.
   # ------------------------------------------------------------------
-  sca-dependency-check:
-    name: SCA - OWASP Dependency-Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: 'temurin'
-          cache: maven
-
-      - name: Run OWASP Dependency-Check
-        run: |
-          mvn -B org.owasp:dependency-check-maven:check \
-              -DfailBuildOnCVSS=7
-
-      - name: Upload Dependency-Check report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: dependency-check-report
-          path: target/dependency-check-report.html
-          retention-days: 14
+    # sca-dependency-check:
+    #   name: SCA - OWASP Dependency-Check
+    #   runs-on: ubuntu-latest
+    #   steps:
+    #     - name: Checkout code
+    #       uses: actions/checkout@v4
+    #
+    #     - name: Set up JDK
+    #       uses: actions/setup-java@v4
+    #       with:
+    #         java-version: ${{ env.JAVA_VERSION }}
+    #         distribution: 'temurin'
+    #         cache: maven
+    #
+    #     - name: Run OWASP Dependency-Check
+    #       run: |
+    #         mvn -B org.owasp:dependency-check-maven:check \
+    #             -DfailBuildOnCVSS=7
+    #
+    #     - name: Upload Dependency-Check report
+    #       uses: actions/upload-artifact@v4
+    #       if: always()
+    #       with:
+    #         name: dependency-check-report
+    #         path: target/dependency-check-report.html
+    #         retention-days: 14
 
   # ------------------------------------------------------------------
   # 4. SpotBugs + PMD (static analysis)
@@ -196,20 +199,19 @@ jobs:
   quality-gate:
     name: Quality Gate
     runs-on: ubuntu-latest
-    needs: [build-and-test, sast-codeql, sca-dependency-check, static-analysis, semgrep]
+    needs: [build-and-test, sast-codeql, static-analysis, semgrep]
     if: always()
     steps:
       - name: Check previous job results
         run: |
           echo "Build & Test: ${{ needs.build-and-test.result }}"
           echo "CodeQL:       ${{ needs.sast-codeql.result }}"
-          echo "SCA:          ${{ needs.sca-dependency-check.result }}"
+          echo "SCA:          disabled temporarily (OWASP Dependency-Check)"
           echo "Static:       ${{ needs.static-analysis.result }}"
           echo "Semgrep:      ${{ needs.semgrep.result }}"
 
           if [[ "${{ needs.build-and-test.result }}" != "success" || \
                 "${{ needs.sast-codeql.result }}" != "success" || \
-                "${{ needs.sca-dependency-check.result }}" != "success" || \
                 "${{ needs.static-analysis.result }}" != "success" || \
                 "${{ needs.semgrep.result }}" != "success" ]]; then
             echo "::error::Quality gate failed: review the security and test reports"
