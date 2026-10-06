@@ -58,3 +58,4 @@ hallazgos y las pruebas sugeridas. Se recomienda entregar inicialmente a los
 estudiantes el resto del repositorio sin dicho documento.
 
 ## Notas personal
+Test con github copilot

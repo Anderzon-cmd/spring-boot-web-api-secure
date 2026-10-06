@@ -1,6 +1,11 @@
 target/
+reports/local/*
+!reports/local/.gitkeep
 .idea/
 *.iml
 .vscode/
 *.log
 semgrep*
+docker-compose.security.yml
+reports/*
+scripts/*
