@@ -11,7 +11,7 @@ secret scanning, análisis de contenedores y DAST.
 - JDK 21
 - Maven 3.9+
 - Docker, opcional
-- Semgrep, para el análisis local
+- Docker Desktop, para los análisis locales reproducibles
 
 ## Iniciar la aplicación
 
@@ -47,10 +47,31 @@ curl -X POST http://localhost:8080/api/auth/login \
   -d '{"username":"usuario","password":"prueba"}'
 ```
 
-## Semgrep local
+## Reportes locales de seguridad con Docker
 
-```bash
-semgrep scan --config auto --config .semgrep.yml src/main/java
+Los reportes locales se generan en `reports/local/`. La carpeta se conserva en el
+repositorio mediante `.gitkeep`, pero los resultados generados no se versionan.
+
+En Windows PowerShell:
+
+```powershell
+.\scripts\run-security-local.ps1
+```
+
+El script ejecuta los tres análisis en Docker y termina con error si alguno
+detecta hallazgos por encima del umbral configurado:
+
+- Semgrep usa `auto` y el ruleset local `.semgrep.yml`, y genera JSON y SARIF.
+- OWASP Dependency-Check genera HTML y JSON con fallo desde CVSS 7.
+- SpotBugs compila el proyecto y deja `spotbugs.xml`.
+
+También se puede ejecutar un servicio individual:
+
+```powershell
+New-Item -ItemType Directory -Force reports/local
+docker compose -f docker-compose.security.yml run --rm semgrep
+docker compose -f docker-compose.security.yml run --rm dependency-check
+docker compose -f docker-compose.security.yml run --rm spotbugs
 ```
 
 El docente dispone de `docs/GUIA-DOCENTE.md`, que contiene el catálogo de
