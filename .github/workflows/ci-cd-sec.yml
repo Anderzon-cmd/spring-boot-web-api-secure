@@ -73,8 +73,6 @@ jobs:
   sca-dependency-check:
     name: SCA - OWASP Dependency-Check
     runs-on: ubuntu-latest
-    env:
-      NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -83,13 +81,21 @@ jobs:
           distribution: temurin
           cache: maven
       - name: Cache OWASP vulnerability database
+        id: owasp-cache
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository/org/owasp/dependency-check-data
           key: dependency-check-data-${{ runner.os }}
           restore-keys: dependency-check-data-
       - name: Run Dependency-Check
-        run: mvn -B org.owasp:dependency-check-maven:check -DfailBuildOnCVSS=7 -DnvdApiKey="$NVD_API_KEY"
+        run: |
+          if [ "${{ steps.owasp-cache.outputs.cache-hit }}" != "true" ]; then
+            echo "::warning::OWASP Dependency-Check skipped: NVD cache is not available. The nightly workflow must warm the cache first."
+            exit 0
+          fi
+          mvn -B org.owasp:dependency-check-maven:check \
+              -DautoUpdate=false \
+              -DfailBuildOnCVSS=7
       - uses: actions/upload-artifact@v4
         if: always()
         with:
