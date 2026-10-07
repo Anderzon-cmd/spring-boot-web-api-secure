@@ -2,7 +2,7 @@ name: Security - Semgrep
 
 on:
   push:
-    branches: [feature/**', 'bugfix/**', 'hotfix/**']
+    branches: [ 'feature/**', 'bugfix/**', 'hotfix/**' ]
   pull_request:
     branches: [main, develop]
   workflow_dispatch:
@@ -25,9 +25,9 @@ jobs:
       - name: Ejecutar Semgrep
         run: |
           semgrep scan \
-            --config auto \
             --config .semgrep.yml \
-            --metrics=on \
+            --error \
+            --metrics=off \
             --json-output=semgrep-results.json \
             --sarif-output=semgrep-results.sarif \
             src/main/java

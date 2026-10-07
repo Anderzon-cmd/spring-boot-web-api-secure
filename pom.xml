@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.14</version>
+        <version>3.5.16</version>
         <relativePath/>
     </parent>
 
@@ -19,6 +19,10 @@
 
     <properties>
         <java.version>21</java.version>
+        <tomcat.version>10.1.60</tomcat.version>
+        <jackson-bom.version>2.21.7</jackson-bom.version>
+        <log4j2.version>2.26.1</log4j2.version>
+        <commons-lang3.version>3.21.0</commons-lang3.version>
     </properties>
 
     <dependencies>
@@ -44,11 +48,11 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Dependencia desactualizada agregada solo para el laboratorio SCA. -->
+        <!-- Dependencia actualizada para evitar CVE-2022-42889 en Commons Text. -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
-            <version>1.9</version>
+            <version>1.10.0</version>
         </dependency>
 
         <dependency>
@@ -60,6 +64,12 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
+            <version>4.8.6</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -88,10 +98,9 @@
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
-                <version>11.1.1</version>
+                <version>13.0.0</version>
                 <configuration>
                     <failBuildOnCVSS>7</failBuildOnCVSS>
-                    <nvdApiKey>05028C6D-2870-4358-A719-5424DDA781B3</nvdApiKey>
                 </configuration>
             </plugin>
             <!-- SpotBugs -->
